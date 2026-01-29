@@ -1,31 +1,44 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 const API_KEY = "fKXmTzikuP24ES7wyJ95R3YCGhkLSc99";
 const blacklist = new Map();
 
-app.use(express.json());
-
+// Auth middleware
 app.use((req, res, next) => {
-  if (req.headers.authorization !== API_KEY) {
-    return res.sendStatus(401);
-  }
+  const key = req.headers["authorization"];
+  if (key !== API_KEY) return res.sendStatus(401);
   next();
 });
 
+// Add ban
 app.post("/ban", (req, res) => {
-  blacklist.set(req.body.uuid, req.body.reason);
+  const { uuid, reason } = req.body;
+  if (!uuid) return res.status(400).send("UUID missing");
+
+  blacklist.set(uuid, reason || "No reason provided");
+  console.log("Banned:", uuid);
   res.sendStatus(200);
 });
 
-app.get("/ban/:uuid", (req, res) => {
-  if (!blacklist.has(req.params.uuid)) return res.sendStatus(404);
-  res.json({ reason: blacklist.get(req.params.uuid) });
-});
-
+// Remove ban
 app.delete("/ban/:uuid", (req, res) => {
   blacklist.delete(req.params.uuid);
+  console.log("Unbanned:", req.params.uuid);
   res.sendStatus(200);
 });
 
-app.listen(3000, () => console.log("API läuft"));
+// Check ban
+app.get("/ban/:uuid", (req, res) => {
+  if (blacklist.has(req.params.uuid)) {
+    res.status(200).json({ reason: blacklist.get(req.params.uuid) });
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+app.listen(3000, () => {
+  console.log("Blacklist API running on port 3000");
+});
