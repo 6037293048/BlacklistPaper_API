@@ -1,0 +1,17 @@
+{
+  "name": "blacklist-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simple global blacklist API for Paper plugins",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.6.0",
+    "express": "^4.19.2"
+  }
+}
