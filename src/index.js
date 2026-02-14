@@ -6,7 +6,7 @@ const path = require("path");
 const app = express();
 app.use(express.json());
 
-const apiKey = process.env.API_KEY;
+const apiKey = "fKXmTzikuP24ES7wyJ95R3YCGhkLSc99";
 const dbPath =
   process.env.DATABASE_PATH ||
   path.join(__dirname, "..", "data", "blacklist.db");
@@ -96,3 +96,4 @@ const port = Number(process.env.PORT) || 3000;
 app.listen(port, () => {
   console.log(`Blacklist API listening on port ${port}`);
 });
+
